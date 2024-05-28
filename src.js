@@ -74,6 +74,8 @@ var currentThetaRadians;
 var CANVAS_CLICKED = false;
 let canvas = document.getElementById("area");
 let ctx = canvas.getContext("2d");
+ctx.canvas.width  = window.innerWidth;
+ctx.canvas.height = window.innerHeight * 0.7;
 
 var frames = 0;
 var fps = 0;
@@ -264,10 +266,7 @@ function newBall(){
     
     
     
-    if(angle <= 30) c = "red";
-    else if(angle <= 45 && angle > 30) c = "green";
-    else if(angle <= 60 && angle > 45) c = "blue";
-    else if(angle <= 90 && angle > 60) c = "black";
+    c = randomColor();
     
     
     //c = randomColor();
@@ -282,7 +281,7 @@ function newBall(){
 }
 
 function randomColor(){
-    let colors = ['red','cyan','blue','Dark Blue','Light Blue','Purple','Lime','Magenta','silver','gray','green','orange','brown','maroon'];
+    let colors = ['red', 'blue', 'yellow', 'black', 'purple', 'orange', 'pink'];
     return colors[randomInteger(0,colors.length)];
 }
 function randomInteger(min, max){
@@ -296,6 +295,8 @@ function workNextFrame(){
     
     drawAngleIcon();
     drawAngleArc();
+    drawMonkeyIcon();
+    drawTargetIcon();
     
     
     updateBalls();
@@ -326,7 +327,7 @@ function cleanBalls(){
     
     Balls = BallsCopy;
     
-    document.getElementById("ballCount").innerHTML = "NºBalls: "+Balls.length;
+    document.getElementById("ballCount").innerHTML = "Balls: "+Balls.length;
 }
 
 function drawVectorTip(){
@@ -376,18 +377,18 @@ function solveTriangle(){
 
 function passMotionData(opp, adj, hyp, thetaDegrees){
     
-    velocity_initial = hyp;
+    velocity_initial = hyp / 10;
     angle = thetaDegrees.toFixed(2);
     time = null; 
     
-    y_velocity_original = opp;
+    y_velocity_original = opp / 10;
     y_velocity_final = 0;
     y_original = canvas.height;
     y_final = canvas.height;
     y_acceleration = document.getElementById("acceleration").value;
     max_height = null;
     
-    x_velocity_original = adj;
+    x_velocity_original = adj / 10;
     x_velocity_final = 0;
     x_original = 0;
     x_final = null;
@@ -407,6 +408,22 @@ function drawAngleIcon(){
   var img = document.getElementById("angle");
   ctx.drawImage(img, origin.x+5, origin.y-14, 10, 10);
 }
+
+function drawMonkeyIcon(){
+    var img = document.getElementById("monkey");
+    ctx.drawImage(img, origin.x, origin.y-120, 120, 108);
+  }
+
+  function drawTargetIcon(){
+    var img = document.getElementById("target");
+    ctx.font = "14px";
+    ctx.drawImage(img, origin.x+630, origin.y-120, 108, 100);
+    ctx.fillText("630", origin.x+630, origin.y-120);
+    ctx.drawImage(img, origin.x+1000, origin.y-120, 108, 100);
+    ctx.fillText("1000", origin.x+1000, origin.y-120);
+    ctx.drawImage(img, origin.x+1320, origin.y-120, 108, 100);
+    ctx.fillText("1320", origin.x+1320, origin.y-120);
+  }
 
 function clearScreen(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
