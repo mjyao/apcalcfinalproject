@@ -53,9 +53,6 @@ class Ball{
     }
 }
 
-
-
-//screen labels
 let fpsInd = document.getElementById("fpsIndicator");
 let mouseInd = document.getElementById("mouse");
 let hypIndicator = document.getElementById("hypotenuse");
@@ -83,13 +80,11 @@ var lastCallTime;
 
 let Balls = [];
 
-/////////////////////////motion variables//////////
 let velocity_initial;
 let angle;
 let time;
 
 
-//VERTICAL 
 let y_velocity_original = 0;
 let y_velocity_final = 0;
 let y_original = 0;
@@ -98,7 +93,6 @@ let y_acceleration = 0;
 let max_height = 0;
 
 
-//HORIZONTAL 
 let x_velocity_original = 0;
 let x_velocity_final = 0;
 let x_original = 0;
@@ -160,7 +154,7 @@ function loop() {
   window.requestAnimationFrame(loop);  
 }
 
-//motion functions
+
 function MotionMain(ctx){      
         
     y_acceleration = parseFloat(y_acceleration);  
@@ -203,14 +197,11 @@ function createManualBall(){
         
     let accelerationY = parseFloat(document.getElementById("acceleration").value);
     
-    // 1- get the time -> Vf=Vo+at --> t=Vo-Vf/a
     mTime = Math.abs( velY / accelerationY )*2;
     mTime = mTime.toFixed(3);
-    
-    // 2- get the range -> Xf=Vo*t
+
     mDisplacementX = (velX * mTime).toFixed(0);
     
-    // 3- get the maximum height -> Vo*Vo/2*a
     mMaxHeight = Math.abs( (velY*velY) / ( 2 * accelerationY ) ).toFixed(2);
     
     mBall = new Ball(originBalls, {
@@ -234,17 +225,13 @@ function solveProblem(){
     x_final = 0;
     max_height = 0;
         
-    // 1- get the time -> Vf=Vo+at --> t=Vo-Vf/a
     time = Math.abs( (y_velocity_original - y_velocity_final) / y_acceleration )*2;
     time = time.toFixed(3);
     
-    // 2- get the range -> Xf=Vo*t
     x_final = (x_velocity_original * time).toFixed(0);
     
-    // 3- get the maximum height -> Vo*Vo/2*a
     max_height = Math.abs( (y_velocity_original*y_velocity_original) / (2*y_acceleration) ).toFixed(2);  
     
-    //alert("time: "+time+"s range: "+x_final+"m Max.Height: "+max_height+"m");
 }
 
 function showLaunchData(){
@@ -268,9 +255,7 @@ function newBall(){
     
     c = randomColor();
     
-    
-    //c = randomColor();
-      
+
     var ball = new Ball( originBalls, {
         x: x_velocity_original,
         y: y_velocity_original
@@ -287,7 +272,7 @@ function randomColor(){
 function randomInteger(min, max){
     return Math.floor(Math.random() * (max-min+1) + min);
 }
-/////////////////////////////////////////
+
 
 function workNextFrame(){
     drawVectorTip(); 
@@ -352,7 +337,6 @@ function drawAngleArc(){
     ctx.arc(origin.x, origin.y, 30, 0, -currentThetaRadians, true);
     ctx.stroke(); 
     
-    //document.getElementById("currentRads").innerHTML = currentThetaRadians.toFixed(3);
 }
 
 function solveTriangle(){
@@ -432,8 +416,8 @@ function clearScreen(){
 function updateMouse(event){
   var rect = event.target.getBoundingClientRect();
      
-  mousePosition.x = event.clientX - rect.left; //x position within the element.
-  mousePosition.y = event.clientY - rect.top;  //y position within the element.
+  mousePosition.x = event.clientX - rect.left;
+  mousePosition.y = event.clientY - rect.top;
     
   mouseInd.innerHTML = `X: ${mousePosition.x.toFixed(0)}  Y: ${mousePosition.y.toFixed(0)}`;
 }
@@ -502,7 +486,6 @@ function updateCollisionsCounter(){
     }
 }
 
-///funcions xungues de colisions
 function rotate(velocity, angle){
     const rotatedVelocities = {
         x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),   
@@ -520,30 +503,22 @@ function resolveCollision(bubble, otherBubble){
     const xDist = otherBubble.velocity.x - bubble.velocity.x;
     const yDist = otherBubble.velocity.y - bubble.velocity.y;
     
-    //prevent accidental overlap of bubbles
     if(xVelocityDiff * xDist + yVelocityDiff * yDist >= 0){
         
-        
-        //grab angle between the two colliding bubbles
         const angle = -Math.atan2(otherBubble.velocity.y - bubble.velocity.y, otherBubble.velocity.x - bubble.velocity.x);
         
-        //store mass in var for better readability in collision equation
         const m1 = bubble.mass;
         const m2 = otherBubble.mass;
-        
-        //velocity before equation
+
         const u1 = rotate(bubble.velocity, angle);
         const u2 = rotate(otherBubble.velocity, angle);
-        
-        //velocity after 1 dimension collision equation
+
         const v1 = {x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y };
         const v2 = {x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y };
-        
-        //final velocity after rotating axis back to original location
+
         const vFinal1 = rotate(v1, -angle);
         const vFinal2 = rotate(v2, -angle);
         
-        //swap bubbles velocities for realistic bounce effect
         bubble.velocity.x = vFinal1.x;
         bubble.velocity.y = vFinal1.y;
         
@@ -551,7 +526,6 @@ function resolveCollision(bubble, otherBubble){
         otherBubble.velocity.y = vFinal2.y;
     }
 }
-////
 
 function getFPS(){
     
